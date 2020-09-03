@@ -1,1 +1,0 @@
-This code check whether a MTGO .DEK deck is Penny Dreadful Legal
