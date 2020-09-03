@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<Deck xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance">
+  <NetDeckID>0</NetDeckID>
+  <PreconstructedDeckID>0</PreconstructedDeckID>
+  <Cards CatID="37242" Quantity="2" Sideboard="false" Name="Bayamanaco, Keeper of the Secrets of Sweet Potato Bread" />
+  <Cards CatID="37242" Quantity="2" Sideboard="false" Name="Humility" />
+  <Cards CatID="47799" Quantity="3" Sideboard="false" Name="Swamp" />
+  <Cards CatID="46325" Quantity="3" Sideboard="true" Name="Cremate" />
+</Deck>
