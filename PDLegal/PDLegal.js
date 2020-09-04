@@ -22,18 +22,10 @@ function readFileAsync(file) {
 
 async function checkLegality(dekFile){
 
-    // First, let's give the user some feedback that we are working on their request.
-    document.getElementById("output").innerHTML = "Please wait while card legality data is fetched from the Scryfall API";
-    
+    let outputElement = document.getElementById("output");
+    let outputContainerElement = document.getElementById("outputContainer");
     let outputHTMLString = "";
     let deck = await readFileAsync(dekFile);
-
-    // let reader = new FileReader();
-    // reader.onload = function(e) {
-    //     deck = e.target.result;
-    //     console.log(deck);
-    // };
-    // reader.readAsText(dekFile);
 
     let oParser = new DOMParser();
     let oDOM = oParser.parseFromString(deck, "application/xml");
@@ -42,27 +34,44 @@ async function checkLegality(dekFile){
 
     let cardXMLArray = oDOM.childNodes[0].children;
     let cards = [];
+    let deckIsLegal = true;
 
-    for (let i=2; i<cardXMLArray.length; i++){
-        cards.push({cardName: cardXMLArray[i].attributes.Name.textContent});
+    for (let i=0; i<cardXMLArray.length; i++){
+        if (cardXMLArray[i].attributes.Name){
+            cards.push({cardName: cardXMLArray[i].attributes.Name.textContent});
+        }
     }
 
     for (let i=0; i<cards.length; i++){
         let scryfallData = await fetch('https://api.scryfall.com/cards/named?exact=' + cards[i].cardName, {mode: 'cors'}).then(function(response){return response.json();});
         if (scryfallData.code == "not_found"){
-            outputHTMLString += "ERROR: " + cards[i].cardName + " not found<br>";
+            outputHTMLString += '<span style="color:red">ERROR</span> ' + cards[i].cardName + " not found in Scryfall database<br>";
+            deckIsLegal = false;
         } else {
             cards[i].scryfallData = scryfallData;
             if (cards[i].scryfallData.legalities.penny == "legal"){
-                outputHTMLString += '<span style="color:green">';
+                outputHTMLString += '<span style="color:green">✔ </span>';
             } else {
-                outputHTMLString += '<span style="color:red">';
+                outputHTMLString += '<span style="color:red">✖ </span>';
+                deckIsLegal = false;
             }
-            outputHTMLString += cards[i].cardName + "</span><br>";
-        } 
-        document.getElementById("output").innerHTML = outputHTMLString;
+            outputHTMLString += cards[i].cardName + "<br>";
+        }
+        outputElement.innerHTML = outputHTMLString;
+        outputContainerElement.scrollTop = outputContainerElement.scrollHeight;
         sleep(50);
     }
+
+    // Confirm legality once all cards hve been checked
+    outputHTMLString += "<br>Uploaded deck is ";
+    if (deckIsLegal){
+        outputHTMLString += '<span style="color:green">legal</span>';
+    } else {
+        outputHTMLString += '<span style="color:red">not legal</span>';
+    }
+    outputHTMLString += " in Penny Dreadful";
+    outputElement.innerHTML = outputHTMLString;
+    outputContainerElement.scrollTop = outputContainerElement.scrollHeight;
 }
 
 document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {

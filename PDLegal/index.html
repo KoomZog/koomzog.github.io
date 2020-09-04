@@ -2,16 +2,20 @@
 <head>
     <meta charset="UTF-8">
     <title>Penny Dreadful deck legality checker</title>
+    <link rel="stylesheet" href="../style.css">
     <link rel="stylesheet" href="style.css">
 </head>
-<body>
-    <div class="drop-zone">
-        <span class="drop-zone__prompt">Drop MTGO .dek file here or click to upload</span>
-        <input type="file" name="myFile" class="drop-zone__input">
+<body class="body">
+    <div style="height:100%; width:50%; position:fixed; top:0; left:0">
+        <div class="drop-zone centered">
+            <span class="text-medium">Drop MTGO .dek file here or click to upload</span>
+            <input type="file" name="myFile" class="drop-zone__input">
+        </div>
+        <script src="PDLegal.js"></script>
     </div>
-    <script src="PDLegal.js"></script>
-    <p id="output"></p>
+    <div style="height:100%; width:50%; position:fixed; top:0; right:0;">
+        <div id="outputContainer" style="position:absolute; top:50px; bottom:50px; width:100%; overflow: auto;">
+            <p id="output" class="text-medium"></p>
+        </div>
+    </div>
 </body>
-
-<!-- <input id="deck"><br>
-<button onclick="checkLegality()">Check PD Legality</button> -->

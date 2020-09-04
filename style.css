@@ -5,9 +5,18 @@
   color: #cccccc;
 }
 
-.text-small {
+.text-medium {
   font-family: "Verdana", sans-serif;
-  font-size: 20px;
+  font-size: 16px;
   color: #cccccc;
 }
 
+.text-small {
+  font-family: "Verdana", sans-serif;
+  font-size: 12px;
+  color: #cccccc;
+}
+
+.body {
+  background-color: #222222;
+}
