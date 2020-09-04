@@ -1,0 +1,13 @@
+.text-big {
+  font-family: "Verdana", sans-serif;
+  font-weight: bold;
+  font-size: 40px;
+  color: #cccccc;
+}
+
+.text-small {
+  font-family: "Verdana", sans-serif;
+  font-size: 20px;
+  color: #cccccc;
+}
+
