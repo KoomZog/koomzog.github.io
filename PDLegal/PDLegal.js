@@ -22,25 +22,36 @@ function readFileAsync(file) {
 
 async function checkLegality(dekFile){
 
+    function updateOutputAndScrollToBottom(){
+        outputElement.innerHTML = outputHTMLString;
+        outputContainerElement.scrollTop = outputContainerElement.scrollHeight;
+    }
+
+    function extractCardNamesFromXML(deckXML){
+        let cards = [];
+        for (let i=0; i<deckXML.length; i++){
+            if (deckXML[i].attributes.Name){
+                cards.push({cardName: deckXML[i].attributes.Name.textContent});
+            }
+        }
+        return cards;
+    }
+
+    function parseDEK(deck){
+        let oParser = new DOMParser();
+        let oDOM = oParser.parseFromString(deck, "application/xml");
+        // print the name of the root element or error message
+        console.log(oDOM.documentElement.nodeName == "parsererror" ? "error while parsing" : oDOM.documentElement.nodeName);
+        return oDOM.childNodes[0].children;
+    }
+
     let outputElement = document.getElementById("output");
     let outputContainerElement = document.getElementById("outputContainer");
     let outputHTMLString = "";
     let deck = await readFileAsync(dekFile);
-
-    let oParser = new DOMParser();
-    let oDOM = oParser.parseFromString(deck, "application/xml");
-    // print the name of the root element or error message
-    console.log(oDOM.documentElement.nodeName == "parsererror" ? "error while parsing" : oDOM.documentElement.nodeName);
-
-    let cardXMLArray = oDOM.childNodes[0].children;
-    let cards = [];
+    let cardXMLArray = parseDEK(deck);
+    let cards = extractCardNamesFromXML(cardXMLArray);
     let deckIsLegal = true;
-
-    for (let i=0; i<cardXMLArray.length; i++){
-        if (cardXMLArray[i].attributes.Name){
-            cards.push({cardName: cardXMLArray[i].attributes.Name.textContent});
-        }
-    }
 
     for (let i=0; i<cards.length; i++){
         let scryfallData = await fetch('https://api.scryfall.com/cards/named?exact=' + cards[i].cardName, {mode: 'cors'}).then(function(response){return response.json();});
@@ -57,8 +68,7 @@ async function checkLegality(dekFile){
             }
             outputHTMLString += cards[i].cardName + "<br>";
         }
-        outputElement.innerHTML = outputHTMLString;
-        outputContainerElement.scrollTop = outputContainerElement.scrollHeight;
+        updateOutputAndScrollToBottom();
         sleep(50);
     }
 
@@ -70,8 +80,7 @@ async function checkLegality(dekFile){
         outputHTMLString += '<span style="color:red">not legal</span>';
     }
     outputHTMLString += " in Penny Dreadful";
-    outputElement.innerHTML = outputHTMLString;
-    outputContainerElement.scrollTop = outputContainerElement.scrollHeight;
+    updateOutputAndScrollToBottom();
 }
 
 document.querySelectorAll(".drop-zone__input").forEach((inputElement) => {
